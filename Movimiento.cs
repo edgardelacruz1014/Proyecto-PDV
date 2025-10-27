@@ -8,14 +8,14 @@ public class Movimiento : MonoBehaviour
     public float fuerzaSalto = 10f;
     public float longitudRaycast = 0.1f;
     public LayerMask capaSuelo;
-
+    public Animator animator;
     private bool enSuelo;
-    private Rigidbody rb;
+    private Rigidbody2D rb;
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody2D>();
 
     }
 
@@ -23,6 +23,17 @@ public class Movimiento : MonoBehaviour
     void Update()
     {
         float velocidadX = Input.GetAxis("Horizontal")*Time.deltaTime*velocidad;
+
+        animator.SetFloat("movement", velocidadX*velocidad);
+
+        if (velocidadX > 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        else if (velocidadX < 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
 
         Vector3 posicion = transform.position;
 
@@ -33,8 +44,10 @@ public class Movimiento : MonoBehaviour
         enSuelo = hit.collider != null;
         if (Input.GetKeyDown(KeyCode.Space) && enSuelo)
         {
-            rb.AddForce(Vector2.up * fuerzaSalto, ForceMode.Impulse);
+            rb.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
         }
+
+        animator.SetBool("ensuelo", enSuelo);
 
     }
     private void OnDrawGizmos()
@@ -42,6 +55,13 @@ public class Movimiento : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, new Vector3(transform.position.x, transform.position.y - longitudRaycast, transform.position.z));
     }
+   
+
+
+
+    
 }
+
+
 
 
